@@ -1,0 +1,151 @@
+#%RAML 1.0
+---
+title: Ekki
+baseUri: localhost:3000/api/{version}
+version: v1
+protocols: [HTTP]
+mediaType: application/json
+securedBy: basicAuth
+securitySchemes: 
+    basicAuth:
+        description: Todas as requisições precisam conter as credencias de autenticação válidas
+        type: Basic Authentication
+        describedBy: 
+            headers:
+                Authorization:
+                    description: Deve conter uma hash contendo as credenciais do usuário logado
+                    type: string
+            responses:
+                401:
+                    description: |
+                        O usuário não se logou previamente na plataforma ou não tem 
+                        permissão para acessar este recurso
+
+/users:
+    description: Coleção de usuários cadastrados na plataforma
+    /{userId}:
+        description: Ações disponíveis para um único usuário
+        get:
+            description: Busca um usuário pelo seu ID
+            responses:
+                200:
+                    body:
+                        application/json:
+                            example: |
+                                {
+                                    "data": {
+                                        "user": {
+                                            "id": "2d283c56-c1b2-11e8-a355-529269fb1459",
+                                            "name": "Vinícius Teixeira",
+                                            "email": "vini@morfar.com.br",
+                                            "document_type": "CPF",
+                                            "document_number": "55555555555",
+                                            "birth": "1997-03-06",
+                                            "created_at": "2018-09-26 14:20:35"
+                                        }
+                                    },
+                                    "success": true,
+                                    "status": 200,
+                                    "errors": []
+                                }
+                404:
+                    body:
+                        application/json:
+                            example: |
+                                {
+                                    "data": {},
+                                    "success": false,
+                                    "status": 404,
+                                    "errors": |
+                                        [
+                                            { message: "Usuário não encontrado", code:"404" }
+                                        ]
+                                }
+        post:
+            description: Atualiza um usuário
+        delete:
+            description: Deleta um usuário
+        /account:
+            get:
+                description: Retorna a conta bancária do usuário
+                responses:
+                    200:
+                        body:
+                            application/json:
+                                example: |
+                                    {
+                                        "data": {
+                                            "account": {
+                                                "number": "2021-3",
+                                                "balance": 133.7,
+                                                "created_at": "2018-09-26 15:45:21"
+                                            }
+                                        },
+                                        "success": true,
+                                        "status": 200,
+                                        "errors": []
+                                    }
+            /transfer:
+                post:
+                    description: Realiza uma transferência para uma outra conta
+            /deposit:
+                post:
+                    description: Realiza um depósito em conta bancária utilizando cartão de crédito
+                    body:
+                        application/x-www-form-urlencoded:
+                            properties:
+                                cardId:
+                                    description: ID do cartão de crédito utilizado para realizar pagamento
+                                    type: number
+                                amount:
+                                    description: Valor em R$ a ser depósitado na conta bancária
+                                    type: number
+                    responses:
+                        200:
+                            body:
+                                application/json:
+                                    example: |
+                                        {
+                                            "data": {
+                                                "transaction": {
+                                                    "id": "16df3bb8-5914-42fd-ae33-7b3862ff7643",
+                                                    "amount": 150.90,
+                                                    "status": "aproved",
+                                                    "destination_account": {
+                                                        "number": "2021-3",
+                                                        "holder_name": "Vinícius Müller Teixeira",
+                                                        "holder_document_type": "CPF",
+                                                        "holder_document_number": "55555555555"
+                                                    },
+                                                    "sender_account": {
+                                                        "number": "2021-3",
+                                                        "holder_name": "Vinícius Müller Teixeira",
+                                                        "holder_document_type": "CPF",
+                                                        "holder_document_number": "55555555555"
+                                                    },
+                                                    "payment_method": "credit_card",
+                                                    "created_at": "2018-09-26 17:54:31"
+                                                }
+                                            },
+                                            "success": true,
+                                            "status": 200,
+                                            "errors": []
+                                        }
+
+                                
+        /cards:
+            /{cardId}:
+                description: Ações sobre um cartão de crédito do usuário
+                get:
+                    description: Retorna todos os cartões de créditos cadastrado pelo usuário
+                delete:
+                    description: Delete um cartão de crédito do usuário
+            get:
+                description: Retorna todos os cartões de créditos cadastrado pelo usuário
+            post:
+                description: Cadastra um novo cartão de crédito para o usuário
+
+    post:
+        description: Cadastra um novo usuário
+        securedBy: null
+/transactions:
