@@ -1,7 +1,7 @@
 #%RAML 1.0
 ---
 title: Ekki
-baseUri: localhost:3000/api/{version}
+baseUri: localhost:3991/api/{version}
 version: v1
 protocols: [HTTP]
 mediaType: application/json
@@ -39,7 +39,7 @@ securitySchemes:
                                             "name": "Vinícius Teixeira",
                                             "email": "vini@morfar.com.br",
                                             "document_type": "CPF",
-                                            "document_number": "55555555555",
+                                            "document_number": "36319472081",
                                             "birth": "1997-03-06",
                                             "created_at": "2018-09-26 14:20:35"
                                         }
@@ -62,7 +62,7 @@ securitySchemes:
                                         ]
                                 }
         post:
-            description: Atualiza um usuário
+            description: Edita um usuário
         delete:
             description: Deleta um usuário
         /account:
@@ -88,6 +88,83 @@ securitySchemes:
             /transfer:
                 post:
                     description: Realiza uma transferência para uma outra conta
+                    body:
+                        application/x-www-form-urlencoded:
+                            properties:
+                                account_number:
+                                    description: Número da conta a ser transferido
+                                    type: string 
+                                balance_amount:
+                                    description: |
+                                        Valor em R$ a ser descontado do saldo da conta bancária do usuário
+                                        que está realizando a transferência
+                                    type: number
+                                credit_card_amount:
+                                    description: |
+                                        Valor em R$ pago com cartão de crédito 
+                                        para completar a transferência, somente quando
+                                        a conta não tem saldo  suficiente
+                                    type: number
+                                total_amount:
+                                    description: Valor em R$ representando o total a ser transferido
+                                    type: number
+                                payment_method: 
+                                    description: |
+                                        Método de pagamento 
+                                        opções disponíveis: balance, credit_card, balance_and_cc 
+                                    type: string
+                                card_id:
+                                    description: ID do cartão do crédito utilizado para completar o valor da transacao
+                                    type: string
+                                    required: false 
+                                
+                    responses:
+                        200:
+                            body:
+                                application/json:
+                                    example: |
+                                        {
+                                            "data": {
+                                                "transaction": {
+                                                    "id": "324c27fd-6916-46bb-a270-cb79926b0c9b",
+                                                    "total_amount": 525.15,
+                                                    "status": "approved",
+                                                    "destination_account": {
+                                                        "number": "2041-3",
+                                                        "holder_name": "João Frederico Oliveira",
+                                                        "holder_document_type": "CPF",
+                                                        "holder_document_number": "68916883024"
+                                                    },
+                                                    "sender_account": {
+                                                        "number": "2021-3",
+                                                        "holder_name": "Vinícius Müller Teixeira",
+                                                        "holder_document_type": "CPF",
+                                                        "holder_document_number": "36319472081"
+                                                    },
+                                                    "payment_method": "balance_and_cc",
+                                                    "extra_details": {
+                                                        "balance_amount": 133.7,
+                                                        "credit_card_amount": 391.45,
+                                                        "credit_card": {
+                                                            "expiration_month": 1,
+                                                            "expiration_year": 2022,
+                                                            "first_six_digits": 552023,
+                                                            "last_four_digits": 9114,
+                                                            "security_code": {
+                                                                "length": 3,
+                                                                "location": "back"
+                                                            },
+                                                            "issuer": "mastercard",
+                                                            "cardholder": "VINÍCIUS M. TEIXEIRA"
+                                                        }
+                                                    }
+                                                    "created_at": "2018-09-26 17:54:31"
+                                                }
+                                            },
+                                            "success": true,
+                                            "status": 200,
+                                            "errors": []
+                                        }
             /deposit:
                 post:
                     description: Realiza um depósito em conta bancária utilizando cartão de crédito
@@ -110,7 +187,7 @@ securitySchemes:
                                                 "transaction": {
                                                     "id": "16df3bb8-5914-42fd-ae33-7b3862ff7643",
                                                     "amount": 150.90,
-                                                    "status": "aproved",
+                                                    "status": "approved",
                                                     "destination_account": {
                                                         "number": "2021-3",
                                                         "holder_name": "Vinícius Müller Teixeira",
@@ -137,15 +214,21 @@ securitySchemes:
             /{cardId}:
                 description: Ações sobre um cartão de crédito do usuário
                 get:
-                    description: Retorna todos os cartões de créditos cadastrado pelo usuário
+                    description: Retorna cartão de crédito cadastrado
+                post:
+                    description: Edita um cartão de crédito cadastrado previamente
                 delete:
-                    description: Delete um cartão de crédito do usuário
+                    description: Delete um cartão de crédito
             get:
                 description: Retorna todos os cartões de créditos cadastrado pelo usuário
             post:
                 description: Cadastra um novo cartão de crédito para o usuário
-
+        /transactions:
+            description: Coleção de transações de um usuário
+            get:
+                description: Retorna todas as transações de um usuário
     post:
         description: Cadastra um novo usuário
         securedBy: null
-/transactions:
+    
+    
