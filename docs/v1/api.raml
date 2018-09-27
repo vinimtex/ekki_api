@@ -23,7 +23,7 @@ securitySchemes:
 
 /users:
     description: Coleção de usuários cadastrados na plataforma
-    /{userId}:
+    /{userUuid}:
         description: Ações disponíveis para um único usuário
         get:
             description: Busca um usuário pelo seu ID
@@ -35,7 +35,8 @@ securitySchemes:
                                 {
                                     "data": {
                                         "user": {
-                                            "id": "2d283c56-c1b2-11e8-a355-529269fb1459",
+                                            "id": 1,
+                                            "uuid": "2d283c56-c1b2-11e8-a355-529269fb1459",
                                             "name": "Vinícius Teixeira",
                                             "email": "vini@morfar.com.br",
                                             "document_type": "CPF",
@@ -126,7 +127,8 @@ securitySchemes:
                                         {
                                             "data": {
                                                 "transaction": {
-                                                    "id": "324c27fd-6916-46bb-a270-cb79926b0c9b",
+                                                    "id": 2,
+                                                    "uuid": "324c27fd-6916-46bb-a270-cb79926b0c9b",
                                                     "total_amount": 525.15,
                                                     "status": "approved",
                                                     "destination_account": {
@@ -185,7 +187,8 @@ securitySchemes:
                                         {
                                             "data": {
                                                 "transaction": {
-                                                    "id": "16df3bb8-5914-42fd-ae33-7b3862ff7643",
+                                                    "id": 1,
+                                                    "uuid": "16df3bb8-5914-42fd-ae33-7b3862ff7643",
                                                     "amount": 150.90,
                                                     "status": "approved",
                                                     "destination_account": {
@@ -211,7 +214,7 @@ securitySchemes:
 
                                 
         /cards:
-            /{cardId}:
+            /{cardUuid}:
                 description: Ações sobre um cartão de crédito do usuário
                 get:
                     description: Retorna cartão de crédito cadastrado
