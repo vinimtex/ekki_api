@@ -230,6 +230,23 @@ securitySchemes:
             description: Coleção de transações de um usuário
             get:
                 description: Retorna todas as transações de um usuário
+        /contacts:
+            description: Coleção de contatos/favorecidos
+            get:
+                description: Retorna todos os contatos de um usuário
+            post:
+                description: Adiciona um novo contato na lista de contatos do usuário
+                body:
+                    application/x-www-form-urlencoded:
+                        properties:
+                            contactUuid:
+                                description: UUID do usuário a ser cadastrado
+                                type: string
+            /{contactUuid}:
+                get:
+                    description: Retorna um contato cadastrado na lista de contatos
+                delete:
+                    description: Deleta um contato da lista
     post:
         description: Cadastra um novo usuário
         securedBy: null
