@@ -8,6 +8,7 @@
   },
   "scripts": {
     "migrate": "node migrate.js",
+    "start": "nodemon app/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,7 +22,13 @@
   },
   "homepage": "https://github.com/vinimtex/ekki_api#readme",
   "dependencies": {
-    "tabel": "^2.6.11"
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.4",
+    "errorhandler": "^1.5.0",
+    "express": "^4.16.3",
+    "express-cluster": "0.0.5",
+    "tabel": "^2.6.11",
+    "throw.js": "^3.0.1"
   },
   "devDependencies": {
     "eslint": "^5.6.0",
@@ -29,6 +36,7 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-node": "^7.0.1",
     "eslint-plugin-promise": "^4.0.1",
-    "eslint-plugin-standard": "^4.0.0"
+    "eslint-plugin-standard": "^4.0.0",
+    "nodemon": "^1.18.4"
   }
 }
