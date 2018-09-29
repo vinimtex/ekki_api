@@ -1,11 +1,9 @@
 function up (knex) {
   return knex.schema.createTable('users_contacts', function (table) {
-    table.increments()
-
-    table.integer('user_id').unsigned()
+    table.uuid('user_id')
     table.foreign('user_id').references('users.id')
 
-    table.integer('contact_id').unsigned()
+    table.uuid('contact_id')
     table.foreign('contact_id').references('users.id')
 
     table.timestamps()

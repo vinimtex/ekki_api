@@ -1,11 +1,10 @@
 function up (knex) {
   return knex.schema.createTable('transactions', function (table) {
-    table.increments()
+    table.uuid('id').primary()
 
-    table.integer('extra_detail_id').unsigned()
+    table.uuid('extra_detail_id')
     table.foreign('extra_detail_id').references('transactions_extra.id').onDelete('set null')
 
-    table.uuid('uuid')
     table.decimal('total_amount', 15, 2)
     table.string('status')
     table.string('destination_account_number')

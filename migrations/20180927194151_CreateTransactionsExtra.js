@@ -1,6 +1,6 @@
 function up (knex) {
   return knex.schema.createTable('transactions_extra', function (table) {
-    table.increments()
+    table.uuid('id').primary()
     table.decimal('balance_amount', 15, 2)
     table.decimal('credit_card_amount', 15, 2)
     table.integer('cc_expiration_month')

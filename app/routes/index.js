@@ -5,6 +5,8 @@ app.get('/', (req, res) => {
   res.send('/')
 })
 
+app.use('/users', require('./users'))
+
 app.all('*', (req, res, next) => {
   next(errors.NotFound())
 })

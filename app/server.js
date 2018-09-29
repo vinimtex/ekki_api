@@ -3,6 +3,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const errorhandler = require('errorhandler')
 const cors = require('cors')
+const helmet = require('helmet')
 
 const config = require('../configs/app')
 
@@ -19,6 +20,8 @@ function run () {
 
   app.use(cors())
 
+  app.use(helmet())
+
   switch (process.env.NODE_ENV) {
     case 'production':
       app.set('trust proxy', 'loopback')
@@ -27,7 +30,7 @@ function run () {
 
       app.set('baseUrl', config.baseUrl)
 
-      app.use(routes)
+      app.use('/api/' + config.apiVersion + '/', routes) // set api routes
 
       cluster((worker) => app.listen(config.server.port, config.server.host, () => {
         console.log(`worker ${worker.id} online`)
@@ -40,7 +43,7 @@ function run () {
 
       app.set('baseUrl', config.baseUrl)
 
-      app.use(routes)
+      app.use('/api/' + config.apiVersion + '/', routes) // set api routes
 
       app.listen(config.server.port, config.server.host, () => {
         console.log(`Ekki api running on http://${config.server.host}:${config.server.port}`)

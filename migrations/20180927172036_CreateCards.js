@@ -1,11 +1,8 @@
 function up (knex) {
   return knex.schema.createTable('cards', function (table) {
-    table.increments()
-
-    table.integer('user_id').unsigned()
+    table.uuid('id').primary()
+    table.uuid('user_id')
     table.foreign('user_id').references('users.id').onDelete('cascade')
-
-    table.uuid('uuid')
     table.string('card_hash')
     table.integer('expiration_month')
     table.integer('expiration_year')

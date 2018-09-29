@@ -23,6 +23,14 @@ securitySchemes:
 
 /users:
     description: Coleção de usuários cadastrados na plataforma
+    /login:
+        securedBy: null
+        post:
+            description: Autentica um usuário, recebe um token de acesso as outras routas
+            securedBy: null
+    /logout:
+        post:
+            description: Token do usuário logado é invalidado
     /{userUuid}:
         description: Ações disponíveis para um único usuário
         get:
