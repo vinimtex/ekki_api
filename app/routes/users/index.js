@@ -1,7 +1,9 @@
 const app = module.exports = require('express')()
 const errors = require('throw.js')
+
 const {
-  createUser
+  createUser,
+  userAuthorization
 } = require('../../actions').users
 
 app.post('/', (req, res, next) => {
@@ -12,6 +14,14 @@ app.post('/', (req, res, next) => {
   })
 })
 
-app.get('/', (req, res) => {
-  res.send('stee')
+app.post('/login', (req, res, next) => {
+  userAuthorization(req.body).then((result) => {
+    res.send({
+      token: result
+    })
+  }).catch((err) => {
+    next(new errors.CustomError('Wrong e-mail or password', err, 403))
+  })
 })
+
+app.use(/^\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/, require('./user')) // /user/{uuId} endpoint

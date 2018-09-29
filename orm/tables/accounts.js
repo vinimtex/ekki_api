@@ -1,6 +1,6 @@
 module.exports = function (orm) {
   orm.defineTable({
-    name: 'users',
+    name: 'accounts',
 
     props: {
       autoId: true,
@@ -8,8 +8,8 @@ module.exports = function (orm) {
     },
 
     relations: {
-      accounts () {
-        return this.hasMany('accounts', 'user_id')
+      user () {
+        return this.belongsTo('users', 'user_id')
       }
     }
   })

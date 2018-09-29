@@ -5,5 +5,6 @@ module.exports = {
   },
   baseUrl: 'http://localhost:3991',
   apiVersion: 'v1',
-  bcryptSaltRounds: 10
+  bcryptSaltRounds: 10,
+  jwtSecret: '#1ab.c@t'
 }
