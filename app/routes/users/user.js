@@ -8,7 +8,9 @@ const {
 } = require('../../actions').users
 
 const {
-  findAccountByUserId
+  findAccountByUserId,
+  transfer,
+  deposit
 } = require('../../actions').accounts
 
 app.all('*', require('./validateToken'))
@@ -37,9 +39,31 @@ app.delete('/', (req, res, next) => {
   })
 })
 
+app.use('/cards', require('./cards'))
+
 app.get('/account', (req, res, next) => {
   findAccountByUserId(req.userId).then((account) => {
     res.send(account)
+  }).catch((err) => {
+    next(new errors.CustomError('Failed to retrieve your account', err, 500))
+  })
+})
+
+app.post('/account/deposit', (req, res, next) => {
+  deposit(req.body).then((transaction) => {
+    res.send(transaction)
+  }).catch((err) => {
+    next(new errors.CustomError('Failed to deposit', err, 500))
+  })
+})
+
+app.post('/account/transfer', (req, res, next) => {
+  findAccountByUserId(req.userId).then((account) => {
+    transfer(account.number, req.body.account_number, req.body).then((transfer) => {
+      res.send(transfer)
+    }).catch((err) => {
+      next(new errors.CustomError('Failed to transfer', err, 500))
+    })
   }).catch((err) => {
     next(new errors.CustomError('Failed to retrieve your account', err, 500))
   })

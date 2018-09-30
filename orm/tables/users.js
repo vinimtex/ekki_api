@@ -10,6 +10,9 @@ module.exports = function (orm) {
     relations: {
       accounts () {
         return this.hasMany('accounts', 'user_id')
+      },
+      cards () {
+        return this.hasMany('cards', 'card_id')
       }
     }
   })

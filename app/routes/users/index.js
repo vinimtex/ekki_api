@@ -1,6 +1,6 @@
 const app = module.exports = require('express')()
 const errors = require('throw.js')
-
+const { uuidRegex } = require('../../util')
 const {
   createUser,
   userAuthorization
@@ -24,4 +24,4 @@ app.post('/login', (req, res, next) => {
   })
 })
 
-app.use(/^\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/, require('./user')) // /user/{uuId} endpoint
+app.use(uuidRegex, require('./user')) // /user/{uuId} endpoint
