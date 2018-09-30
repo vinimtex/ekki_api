@@ -34,8 +34,9 @@ function findAccountByUserId (userId) {
 function transfer (fromAccountNumber, toAccountNumber, data) {
   return table('accounts').eagerLoad('user').where({ number: fromAccountNumber }).first().then((fromAccount) => {
     return table('accounts').eagerLoad('user').where({ number: toAccountNumber }).first().then((toAccount) => {
-      let newFromAccountBalance = fromAccount.balance - data.total_amount
-      let newToAccountBalance = toAccount.balance + data.total_amount
+      let newFromAccountBalance = parseFloat(fromAccount.balance) - parseFloat(data.total_amount)
+      let newToAccountBalance = parseFloat(toAccount.balance) + parseFloat(data.total_amount)
+
       data.status = 'approved'
       data.destination_account_number = toAccount.number
       data.destination_holder_name = toAccount.user.name
@@ -43,13 +44,17 @@ function transfer (fromAccountNumber, toAccountNumber, data) {
       data.sender_account_number = fromAccount.number
       data.sender_holder_name = fromAccount.user.name
       data.sender_document_number = fromAccount.user.document_number
+
       if (toAccount && fromAccount) {
-        if ((data.total_amount <= fromAccount.balance) && data.card_id !== undefined) {
+        if ((parseFloat(data.total_amount) <= parseFloat(fromAccount.balance)) && data.card_id === undefined) {
           table('accounts').update(toAccount.id, { balance: newToAccountBalance })
           table('accounts').update(fromAccount.id, { balance: newFromAccountBalance })
-
+          console.log({
+            from: newFromAccountBalance,
+            to: newToAccountBalance
+          })
           return createTransaction(data)
-        } else if ((data.total_amount > fromAccount.balance) && data.card_id !== undefined) {
+        } else if ((parseFloat(data.total_amount) > parseFloat(fromAccount.balance)) && data.card_id !== undefined) {
           if (data.card_id && data.credit_card_amount > 0) {
             return findCardById(data.card_id).then((card) => {
               let extraData = {
@@ -76,7 +81,7 @@ function transfer (fromAccountNumber, toAccountNumber, data) {
             return { message: 'Total do cartão de crédito inválido' }
           }
         } else {
-          return { message: 'Saldo insuficiente', missing_value: data.total_amount - fromAccount.balance }
+          return { message: 'Saldo insuficiente', missing_value: fromAccount.balance - data.total_amount }
         }
       }
     })

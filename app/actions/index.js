@@ -3,5 +3,6 @@ module.exports = {
   accounts: require('./accounts'),
   transactionsExtra: require('./transactions_extra'),
   transactions: require('./transactions'),
-  cards: require('./cards')
+  cards: require('./cards'),
+  contacts: require('./contacts')
 }

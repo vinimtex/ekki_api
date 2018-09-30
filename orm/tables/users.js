@@ -13,6 +13,9 @@ module.exports = function (orm) {
       },
       cards () {
         return this.hasMany('cards', 'card_id')
+      },
+      contacts () {
+        return this.manyToMany('users', 'users_contacts', 'user_id', 'contact_id')
       }
     }
   })

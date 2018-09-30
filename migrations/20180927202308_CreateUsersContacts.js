@@ -1,10 +1,10 @@
 function up (knex) {
   return knex.schema.createTable('users_contacts', function (table) {
     table.uuid('user_id')
-    table.foreign('user_id').references('users.id')
+    table.foreign('user_id').references('users.id').onDelete('cascade')
 
     table.uuid('contact_id')
-    table.foreign('contact_id').references('users.id')
+    table.foreign('contact_id').references('users.id').onDelete('cascade')
 
     table.timestamps()
   })

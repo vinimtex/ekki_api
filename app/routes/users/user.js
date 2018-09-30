@@ -13,6 +13,10 @@ const {
   deposit
 } = require('../../actions').accounts
 
+const {
+  getTransactions
+} = require('../../actions').transactions
+
 app.all('*', require('./validateToken'))
 
 app.get('/', (req, res, next) => {
@@ -40,6 +44,7 @@ app.delete('/', (req, res, next) => {
 })
 
 app.use('/cards', require('./cards'))
+app.use('/contacts', require('./contacts'))
 
 app.get('/account', (req, res, next) => {
   findAccountByUserId(req.userId).then((account) => {
@@ -66,5 +71,13 @@ app.post('/account/transfer', (req, res, next) => {
     })
   }).catch((err) => {
     next(new errors.CustomError('Failed to retrieve your account', err, 500))
+  })
+})
+
+app.get('/transactions', (req, res, next) => {
+  getTransactions(req.userId).then((transactions) => {
+    res.send(transactions)
+  }).catch((err) => {
+    next(new errors.CustomError('Failed to retrieve your transactions history', err, 500))
   })
 })
