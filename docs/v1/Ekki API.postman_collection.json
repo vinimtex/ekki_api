@@ -1,0 +1,985 @@
+{
+	"info": {
+		"_postman_id": "73ebfd68-05cd-4e16-b310-b213d5b474df",
+		"name": "Ekki API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create User and Open Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8bdbafc2-984b-4d96-94a6-1e911bb0adfe",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.globals.set(\"userId\", jsonData.user_id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"disabled": false
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "Vinícius Teixeira",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "123456",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "vini2@morfar.com.br",
+							"type": "text"
+						},
+						{
+							"key": "document_type",
+							"value": "CPF",
+							"type": "text"
+						},
+						{
+							"key": "document_number",
+							"value": "2321",
+							"type": "text"
+						},
+						{
+							"key": "birth",
+							"value": "1997-03-06",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3991/api/v1/users",
+					"host": [
+						"localhost"
+					],
+					"port": "3991",
+					"path": [
+						"api",
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Login",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8e0079e7-6ebd-4aab-a279-21b68b31277a",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "7d434969-da8f-4856-bd2c-40b84b0835eb",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.globals.set(\"token\", jsonData.token);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "vini@morfar.com.br",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "123456",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3991/api/v1/users/login",
+					"host": [
+						"localhost"
+					],
+					"port": "3991",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"login"
+					]
+				},
+				"description": "Depois do usuário logar e receber um token, armazena esse token como variável global para as próximas requisições"
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Data",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					},
+					{
+						"key": "X-Access-Token",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "vinicius@avanticomunicacao.com.br",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "vini06",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3991/api/v1/users/{{userId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3991",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					},
+					{
+						"key": "X-Access-Token",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "Vinícius Teixeira",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "vinimtex@gmail.com",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3991/api/v1/users/{{userId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3991",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "44dde6e7-fff2-48de-b201-3f7a9e6ac1f4",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.globals.set(\"userAccountNumber\", jsonData.number);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					},
+					{
+						"key": "X-Access-Token",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "vinicius@avanticomunicacao.com.br",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "vini06",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3991/api/v1/users/{{userId}}/account",
+					"host": [
+						"localhost"
+					],
+					"port": "3991",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{{userId}}",
+						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Second User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f6b4f814-0e81-46d8-857b-bc7c21d70b6b",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.globals.set(\"secondUserAccount\", jsonData.number);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "João Frederico Oliveira",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "123456",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "joao.oliveira@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "document_type",
+							"value": "CPF",
+							"type": "text"
+						},
+						{
+							"key": "document_number",
+							"value": "68916883024",
+							"type": "text"
+						},
+						{
+							"key": "birth",
+							"value": "1965-12-17",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3991/api/v1/users",
+					"host": [
+						"localhost"
+					],
+					"port": "3991",
+					"path": [
+						"api",
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Credit Card",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b2dfaec6-0615-4176-a91b-9f8458c7511d",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.globals.set(\"creditCardId\", jsonData.id);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					},
+					{
+						"key": "X-Access-Token",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "card_number",
+							"value": "4916947502788521",
+							"type": "text"
+						},
+						{
+							"key": "ccv",
+							"value": "529",
+							"type": "text"
+						},
+						{
+							"key": "issuer",
+							"value": "visa",
+							"type": "text"
+						},
+						{
+							"key": "card_holder",
+							"value": "VINICIUS M. TEIXEIRA",
+							"type": "text"
+						},
+						{
+							"key": "expiration_month",
+							"value": "02",
+							"type": "text"
+						},
+						{
+							"key": "expiration_year",
+							"value": "2022",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3991/api/v1/users/{{userId}}/cards",
+					"host": [
+						"localhost"
+					],
+					"port": "3991",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{{userId}}",
+						"cards"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Cards",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					},
+					{
+						"key": "X-Access-Token",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "vinicius@avanticomunicacao.com.br",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "vini06",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3991/api/v1/users/{{userId}}/cards",
+					"host": [
+						"localhost"
+					],
+					"port": "3991",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{{userId}}",
+						"cards"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Card",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					},
+					{
+						"key": "X-Access-Token",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "vinicius@avanticomunicacao.com.br",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "vini06",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3991/api/v1/users/{{userId}}/cards/{{creditCardId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3991",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{{userId}}",
+						"cards",
+						"{{creditCardId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Credit Card",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c12d82a1-f9a5-4a0b-aff2-8d0640db0e39",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					},
+					{
+						"key": "X-Access-Token",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "card_number",
+							"value": "4916947502788521",
+							"type": "text"
+						},
+						{
+							"key": "ccv",
+							"value": "529",
+							"type": "text"
+						},
+						{
+							"key": "issuer",
+							"value": "mastercard",
+							"type": "text"
+						},
+						{
+							"key": "card_holder",
+							"value": "VINICIUS M. TEIXEIRA",
+							"type": "text"
+						},
+						{
+							"key": "expiration_month",
+							"value": "02",
+							"type": "text"
+						},
+						{
+							"key": "expiration_year",
+							"value": "2022",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3991/api/v1/users/{{userId}}/cards/{{creditCardId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3991",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{{userId}}",
+						"cards",
+						"{{creditCardId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Card",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					},
+					{
+						"key": "X-Access-Token",
+						"value": "{{token}}"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "localhost:3991/api/v1/users/{{userId}}/cards/{{creditCardId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3991",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{{userId}}",
+						"cards",
+						"{{creditCardId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Deposit",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c12d82a1-f9a5-4a0b-aff2-8d0640db0e39",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					},
+					{
+						"key": "X-Access-Token",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "amount",
+							"value": "200",
+							"type": "text"
+						},
+						{
+							"key": "card_id",
+							"value": "{{creditCardId}}",
+							"type": "text"
+						},
+						{
+							"key": "payment_method",
+							"value": "credit_card",
+							"type": "text"
+						},
+						{
+							"key": "account_number",
+							"value": "{{userAccountNumber}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3991/api/v1/users/{{userId}}/account/deposit",
+					"host": [
+						"localhost"
+					],
+					"port": "3991",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{{userId}}",
+						"account",
+						"deposit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Transfer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c12d82a1-f9a5-4a0b-aff2-8d0640db0e39",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					},
+					{
+						"key": "X-Access-Token",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "account_number",
+							"value": "{{secondUserAccount}}",
+							"type": "text"
+						},
+						{
+							"key": "balance_amount",
+							"value": "120.9",
+							"type": "text"
+						},
+						{
+							"key": "total_amount",
+							"value": "120.9",
+							"type": "text"
+						},
+						{
+							"key": "payment_method",
+							"value": "balance",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3991/api/v1/users/{{userId}}/account/transfer",
+					"host": [
+						"localhost"
+					],
+					"port": "3991",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{{userId}}",
+						"account",
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Transaction History",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					},
+					{
+						"key": "X-Access-Token",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "vinicius@avanticomunicacao.com.br",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "vini06",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3991/api/v1/users/{{userId}}/transactions",
+					"host": [
+						"localhost"
+					],
+					"port": "3991",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{{userId}}",
+						"transactions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add to Contact List",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8e0079e7-6ebd-4aab-a279-21b68b31277a",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "7d434969-da8f-4856-bd2c-40b84b0835eb",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.globals.set(\"token\", jsonData.token);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					},
+					{
+						"key": "X-Access-Token",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "contactId",
+							"value": "{{secondUserAccount}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "123456",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3991/api/v1/users/{{userId}}/contacts",
+					"host": [
+						"localhost"
+					],
+					"port": "3991",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{{userId}}",
+						"contacts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Contacts",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					},
+					{
+						"key": "X-Access-Token",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "vinicius@avanticomunicacao.com.br",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "vini06",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3991/api/v1/users/{{userId}}/contacts",
+					"host": [
+						"localhost"
+					],
+					"port": "3991",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{{userId}}",
+						"contacts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					},
+					{
+						"key": "X-Access-Token",
+						"value": "{{token}}"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "localhost:3991/api/v1/users/{{userId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3991",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
