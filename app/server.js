@@ -1,4 +1,3 @@
-const cluster = require('express-cluster')
 const express = require('express')
 const bodyParser = require('body-parser')
 const errorhandler = require('errorhandler')
@@ -19,7 +18,7 @@ function run () {
   app.use(bodyParser.json())
 
   var corsOptions = {
-    origin: 'https://ekki.herokuapp.com/',
+    origin: 'https://ekki.herokuapp.com',
     optionsSuccessStatus: 200
   }
 
