@@ -8,7 +8,8 @@
   },
   "scripts": {
     "migrate": "node migrate.js",
-    "start": "nodemon app/server.js",
+    "dev": "nodemon app/server.js",
+    "start": "node app/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
