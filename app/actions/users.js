@@ -1,5 +1,5 @@
 const { table } = require('../../orm')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt-nodejs')
 const config = require('../../configs/app')
 const jwt = require('jsonwebtoken')
 const {
@@ -7,33 +7,32 @@ const {
 } = require('./accounts')
 
 function createUser (data = {}) {
-  return bcrypt.hash(data.password, config.bcryptSaltRounds).then((hashedPassword) => {
-    data.password = hashedPassword
-    return table('users').insert(data).then((user) => {
-      return openAccount(user.id)
-    })
-  }).catch((err) => {
-    return Promise.reject(err)
+  let hashedPassword = bcrypt.hashSync(data.password)
+  data.password = hashedPassword
+  return table('users').insert(data).then((user) => {
+    return openAccount(user.id)
   })
 }
 
 function userAuthorization (data = {}) {
   return table('users').where({ email: data.email }).first().then((user) => {
-    return bcrypt.compare(data.password, user.password).then((result) => {
-      if (result) {
-        let token = jwt.sign({ id: user.id }, config.jwtSecret)
-        user.token = token
-        return user
-      } else {
-        return false
-      }
-    })
+    let validPassword = bcrypt.compareSync(data.password, user.password)
+    if (validPassword) {
+      let token = jwt.sign({ id: user.id }, config.jwtSecret)
+      user.token = token
+      return user
+    } else {
+      return false
+    }
   })
 }
 
 function checkPassword (data) {
   return table('users').find(data.id).then((user) => {
-    return bcrypt.compare(data.password, user.password).then((result) => {
+    return bcrypt.compare(data.password, user.password).then((err, result) => {
+      if (err) {
+        return false
+      }
       if (result) {
         return true
       } else {

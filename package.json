@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/vinimtex/ekki_api#readme",
   "dependencies": {
-    "bcrypt": "^3.0.1",
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.18.3",
     "cors": "^2.8.4",
     "errorhandler": "^1.5.0",

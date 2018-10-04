@@ -1,34 +1,26 @@
 const { table } = require('../../orm')
-const bcrypt = require('bcrypt')
-
-const config = require('../../configs/app')
+const bcrypt = require('bcrypt-nodejs')
 
 function createCard (data = {}) {
-  return bcrypt.hash(data.card_number, config.bcryptSaltRounds).then((hashCardNumber) => {
-    return bcrypt.hash(data.ccv, config.bcryptSaltRounds).then((ccvHash) => {
-      data.card_hash = hashCardNumber
-      data.first_six_digits = data.card_number.substring(0, 6)
-      data.last_four_digits = data.card_number.substring(data.card_number.length - 4, data.card_number.length)
-      data.ccv_hash = ccvHash
-      return table('cards').insert(data)
-    })
-  }).catch((err) => {
-    return Promise.reject(err)
-  })
+  let hashCardNumber = bcrypt.hashSync(data.card_number)
+  let ccvHash = bcrypt.hashSync(data.card_number)
+
+  data.card_hash = hashCardNumber
+  data.first_six_digits = data.card_number.substring(0, 6)
+  data.last_four_digits = data.card_number.substring(data.card_number.length - 4, data.card_number.length)
+  data.ccv_hash = ccvHash
+
+  return table('cards').insert(data)
 }
 
 function updateCard (cardId, data = {}) {
-  return bcrypt.hash(data.card_number, config.bcryptSaltRounds).then((hashCardNumber) => {
-    return bcrypt.hash(data.ccv, config.bcryptSaltRounds).then((ccvHash) => {
-      data.card_hash = hashCardNumber
-      data.first_six_digits = data.card_number.substring(0, 6)
-      data.last_four_digits = data.card_number.substring(data.card_number.length - 4, data.card_number.length)
-      data.ccv_hash = ccvHash
-      return table('cards').update(cardId, data)
-    })
-  }).catch((err) => {
-    return Promise.reject(err)
-  })
+  let hashCardNumber = bcrypt.hashSync(data.card_number)
+  let ccvHash = bcrypt.hashSync(data.card_number)
+  data.card_hash = hashCardNumber
+  data.first_six_digits = data.card_number.substring(0, 6)
+  data.last_four_digits = data.card_number.substring(data.card_number.length - 4, data.card_number.length)
+  data.ccv_hash = ccvHash
+  return table('cards').update(cardId, data)
 }
 
 function getUserCards (userId) {
