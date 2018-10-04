@@ -11,6 +11,10 @@ const {
   findCardById
 } = require('./cards')
 
+const {
+  addContact
+} = require('./contacts')
+
 function openAccount (userId) {
   let accountNumber = generateAccountNumber()
 
@@ -32,59 +36,99 @@ function findAccountByUserId (userId) {
 }
 
 function transfer (fromAccountNumber, toAccountNumber, data) {
+  let duplicated = false
   return table('accounts').eagerLoad('user').where({ number: fromAccountNumber }).first().then((fromAccount) => {
     return table('accounts').eagerLoad('user').where({ number: toAccountNumber }).first().then((toAccount) => {
-      let newFromAccountBalance = parseFloat(fromAccount.balance) - parseFloat(data.total_amount)
-      let newToAccountBalance = parseFloat(toAccount.balance) + parseFloat(data.total_amount)
+      return table('transactions')
+        .orderBy('created_at', 'desc')
+        .where('sender_document_number', '=', fromAccount.user.document_number)
+        .first()
+        .then((lastTransaction) => {
+          if (lastTransaction) {
+            let now = new Date()
+            let transactionDate = new Date(lastTransaction.created_at)
 
-      data.status = 'approved'
-      data.destination_account_number = toAccount.number
-      data.destination_holder_name = toAccount.user.name
-      data.destination_document_number = toAccount.user.document_number
-      data.sender_account_number = fromAccount.number
-      data.sender_holder_name = fromAccount.user.name
-      data.sender_document_number = fromAccount.user.document_number
-
-      if (toAccount && fromAccount) {
-        if ((parseFloat(data.total_amount) <= parseFloat(fromAccount.balance)) && data.card_id === undefined) {
-          table('accounts').update(toAccount.id, { balance: newToAccountBalance })
-          table('accounts').update(fromAccount.id, { balance: newFromAccountBalance })
-          console.log({
-            from: newFromAccountBalance,
-            to: newToAccountBalance
-          })
-          return createTransaction(data)
-        } else if ((parseFloat(data.total_amount) > parseFloat(fromAccount.balance)) && data.card_id !== undefined) {
-          if (data.card_id && data.credit_card_amount > 0) {
-            return findCardById(data.card_id).then((card) => {
-              let extraData = {
-                balance_amount: data.balance_amount,
-                credit_card_amount: data.credit_card_amount,
-                cc_expiration_month: card.expiration_month,
-                cc_expiration_year: card.expiration_year,
-                cc_first_six_digits: card.first_six_digits,
-                cc_last_four_digits: card.last_four_digits,
-                cc_security_code_size: card.security_code_size,
-                cc_security_code_length: card.security_code_length,
-                cc_issuer: card.issuer,
-                cc_card_holder: card.card_holder
-              }
-
-              return createTransactionExtra(extraData).then((extra) => {
-                data.extra_detail_id = extra.id
-                table('accounts').update(toAccount.id, { balance: newFromAccountBalance })
-                table('accounts').update(fromAccount.id, { balance: newToAccountBalance })
-                return createTransaction(data)
-              })
+            var ms = (now - transactionDate)
+            var minutes = Math.round(((ms % 86400000) % 3600000) / 60000)
+            console.log({
+              ms: ms,
+              minutos: minutes,
+              lastTransaction
             })
-          } else {
-            return { message: 'Total do cartão de crédito inválido' }
+            if (parseFloat(lastTransaction.total_amount) === parseFloat(data.total_amount) && minutes < 2 && lastTransaction.destination_document_number === toAccount.user.document_number) {
+              duplicated = true
+              console.log('entrou')
+              table('transactions').update(lastTransaction.id, { status: 'canceled' })
+              // let refundSenderValue = parseFloat(fromAccount.balance) + parseFloat(lastTransaction.total_amount)
+              // let discountDestinationValue = parseFloat(toAccount.balance) - parseFloat(lastTransaction.total_amount)
+              // table('accounts').update(fromAccount.id, { balance: refundSenderValue })
+              // table('accounts').update(toAccount.id, { balance: discountDestinationValue })
+              return false
+            }
           }
-        } else {
-          return { message: 'Saldo insuficiente', missing_value: fromAccount.balance - data.total_amount }
-        }
-      }
-    })
+
+          let newFromAccountBalance
+          if (data.card_id) {
+            newFromAccountBalance = parseFloat(fromAccount.balance) - parseFloat(data.balance_amount)
+          } else {
+            newFromAccountBalance = parseFloat(fromAccount.balance) - parseFloat(data.total_amount)
+          }
+
+          let newToAccountBalance = parseFloat(toAccount.balance) + parseFloat(data.total_amount)
+
+          data.status = 'approved'
+          data.destination_account_number = toAccount.number
+          data.destination_holder_name = toAccount.user.name
+          data.destination_document_number = toAccount.user.document_number
+          data.sender_account_number = fromAccount.number
+          data.sender_holder_name = fromAccount.user.name
+          data.sender_document_number = fromAccount.user.document_number
+
+          if (data.save_contact) {
+            addContact(fromAccount.user.id, toAccount.user.id)
+          }
+
+          if (toAccount && fromAccount) {
+            if ((parseFloat(data.total_amount) <= parseFloat(fromAccount.balance)) && data.card_id === undefined) {
+              if (!duplicated) {
+                table('accounts').update(toAccount.id, { balance: newToAccountBalance })
+                table('accounts').update(fromAccount.id, { balance: newFromAccountBalance })
+              }
+              return createTransaction(data)
+            } else if ((parseFloat(data.total_amount) > parseFloat(fromAccount.balance)) && data.card_id !== undefined) {
+              if (data.card_id && data.credit_card_amount > 0) {
+                return findCardById(data.card_id).then((card) => {
+                  let extraData = {
+                    balance_amount: data.balance_amount,
+                    credit_card_amount: data.credit_card_amount,
+                    cc_expiration_month: card.expiration_month,
+                    cc_expiration_year: card.expiration_year,
+                    cc_first_six_digits: card.first_six_digits,
+                    cc_last_four_digits: card.last_four_digits,
+                    cc_security_code_size: card.security_code_size,
+                    cc_security_code_length: card.security_code_length,
+                    cc_issuer: card.issuer,
+                    cc_card_holder: card.card_holder
+                  }
+
+                  return createTransactionExtra(extraData).then((extra) => {
+                    data.extra_detail_id = extra.id
+                    if (!duplicated) {
+                      table('accounts').update(toAccount.id, { balance: newToAccountBalance })
+                      table('accounts').update(fromAccount.id, { balance: newFromAccountBalance })
+                    }
+                    return createTransaction(data)
+                  })
+                })
+              } else {
+                return { message: 'Total do cartão de crédito inválido' }
+              }
+            } else {
+              return { message: 'Saldo insuficiente', missing_value: fromAccount.balance - data.total_amount }
+            }
+          }
+        })
+    })   
   })
 }
 

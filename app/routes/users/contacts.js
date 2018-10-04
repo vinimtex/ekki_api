@@ -17,8 +17,8 @@ app.post('/', (req, res, next) => {
 })
 
 app.get('/', (req, res, next) => {
-  getContacts(req.userId).then((contacts) => {
-    res.send(contacts)
+  getContacts(req.userId).then((result) => {
+    res.send(result.contacts)
   }).catch((err) => {
     next(new errors.CustomError('Failed to retrieve your contacts', err, 500))
   })

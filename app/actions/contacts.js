@@ -8,7 +8,9 @@ function addContact (userId, contactId) {
 }
 
 function getContacts (userId) {
-  return table('users_contacts').join('users', 'users_contacts.contact_id', '=', 'users.id').all()
+  return table('users').eagerLoad({ contacts: (t) => {
+    t.eagerLoad('accounts')
+  } }).find(userId)
 }
 
 function getContact (userId, contactId) {

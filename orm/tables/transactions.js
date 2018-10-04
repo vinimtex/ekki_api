@@ -9,7 +9,7 @@ module.exports = function (orm) {
 
     relations: {
       extra_detail () {
-        return this.hasOne('transactions_extra', 'id')
+        return this.belongsTo('transactions_extra', 'extra_detail_id')
       }
     }
   })

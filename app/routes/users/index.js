@@ -16,9 +16,7 @@ app.post('/', (req, res, next) => {
 
 app.post('/login', (req, res, next) => {
   userAuthorization(req.body).then((result) => {
-    res.send({
-      token: result
-    })
+    res.send(result)
   }).catch((err) => {
     next(new errors.CustomError('Wrong e-mail or password', err, 403))
   })

@@ -4,7 +4,8 @@ const errors = require('throw.js')
 const {
   findUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  checkPassword
 } = require('../../actions').users
 
 const {
@@ -63,15 +64,46 @@ app.post('/account/deposit', (req, res, next) => {
 })
 
 app.post('/account/transfer', (req, res, next) => {
-  findAccountByUserId(req.userId).then((account) => {
-    transfer(account.number, req.body.account_number, req.body).then((transfer) => {
-      res.send(transfer)
-    }).catch((err) => {
-      next(new errors.CustomError('Failed to transfer', err, 500))
+  if (req.body.total_amount > 1000) {
+    checkPassword({
+      id: req.userId,
+      password: req.body.password
+    }).then((validPassword) => {
+      if (validPassword) {
+        findAccountByUserId(req.userId).then((account) => {
+          transfer(account.number, req.body.account_number, req.body).then((transfer) => {
+            if (transfer) {
+              res.send(transfer)
+            } else {
+              next(new errors.CustomError('Duplicated transfer', 'Duplicated transfer', 500))
+            }
+          }).catch((err) => {
+            next(new errors.CustomError('Failed to transfer', err, 500))
+          })
+        }).catch((err) => {
+          next(new errors.CustomError('Failed to retrieve your account', err, 500))
+        })
+      } else {
+        next(new errors.CustomError('Wrong password', 'Wrong Password', 401))
+      }
     })
-  }).catch((err) => {
-    next(new errors.CustomError('Failed to retrieve your account', err, 500))
-  })
+  } else {
+    // @TODO: remover repetição de código
+    findAccountByUserId(req.userId).then((account) => {
+      transfer(account.number, req.body.account_number, req.body).then((transfer) => {
+        if (transfer) {
+          res.send(transfer)
+        } else {
+          next(new errors.CustomError('Duplicated transfer', 'Duplicated transfer', 500))
+        }
+      }).catch((err) => {
+        next(new errors.CustomError('Failed to transfer', err, 500))
+      })
+    }).catch((err) => {
+      next(new errors.CustomError('Failed to retrieve your account', err, 500))
+    })
+    // @ENDTODO
+  }
 })
 
 app.get('/transactions', (req, res, next) => {

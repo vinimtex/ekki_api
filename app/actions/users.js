@@ -22,7 +22,20 @@ function userAuthorization (data = {}) {
     return bcrypt.compare(data.password, user.password).then((result) => {
       if (result) {
         let token = jwt.sign({ id: user.id }, config.jwtSecret)
-        return token
+        user.token = token
+        return user
+      } else {
+        return false
+      }
+    })
+  })
+}
+
+function checkPassword (data) {
+  return table('users').find(data.id).then((user) => {
+    return bcrypt.compare(data.password, user.password).then((result) => {
+      if (result) {
+        return true
       } else {
         return false
       }
@@ -47,5 +60,6 @@ module.exports = {
   userAuthorization,
   findUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  checkPassword
 }
