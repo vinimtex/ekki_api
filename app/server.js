@@ -36,9 +36,12 @@ function run () {
       app.set('baseUrl', config.baseUrl)
 
       app.use('/api/' + config.apiVersion + '/', routes) // set api routes
-      cluster((worker) => app.listen(process.env.PORT || 8080, config.server.host, () => {
+      /* cluster((worker) => app.listen(process.env.PORT || 8080, config.server.host, () => {
         console.log(`worker ${worker.id} online`)
-      }))
+      })) */
+      app.listen(process.env.PORT || 8080, () => {
+        console.log(`Ekki api running on http://${config.server.host}:${process.env.PORT}`)
+      })
       break
     default:
       app.use(cors())
