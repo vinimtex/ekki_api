@@ -6,6 +6,10 @@
   "directories": {
     "doc": "docs"
   },
+  "engines": {
+    "node": "8.12.0",
+    "npm": "6.4.1"
+  },
   "scripts": {
     "migrate": "node migrate.js",
     "start": "nodemon app/server.js",

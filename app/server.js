@@ -18,7 +18,12 @@ function run () {
 
   app.use(bodyParser.json())
 
-  app.use(cors())
+  var corsOptions = {
+    origin: 'https://ekki.herokuapp.com/',
+    optionsSuccessStatus: 200
+  }
+
+  app.use(cors(corsOptions))
 
   app.use(helmet())
 
